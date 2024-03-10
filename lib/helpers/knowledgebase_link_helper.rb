@@ -1,4 +1,4 @@
-module KnowledgebaseLinkHelper
+module Helpers::KnowledgebaseLinkHelper
 
   def link_to_article(article)
     link_to l(:label_kb_link, :kb_id => article.id.to_s), article_path(article.project, article.id), :title => article.title

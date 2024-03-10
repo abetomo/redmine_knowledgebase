@@ -1,4 +1,4 @@
-module KnowledgebaseSettingsHelper
+module Helpers::KnowledgebaseSettingsHelper
   def redmine_knowledgebase_settings_value(key)
     defaults = Redmine::Plugin::registered_plugins[:redmine_knowledgebase].settings[:default]
 

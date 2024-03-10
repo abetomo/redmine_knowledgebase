@@ -1,17 +1,15 @@
-require 'redmine'
-require 'macros'
-require 'concerns/knowledgebase_project_extension'
-require 'helpers/knowledgebase_link_helper'
-require 'helpers/knowledgebase_settings_helper'
-
-Project.send :include, KnowledgebaseProjectExtension
-SettingsHelper.send :include, KnowledgebaseSettingsHelper
+Project.send :include, Concerns::KnowledgebaseProjectExtension
+SettingsHelper.send :include, Helpers::KnowledgebaseSettingsHelper
 ApplicationHelper.send :include, RedmineCrm::TagsHelper
 
 Rails.configuration.to_prepare do
   Redmine::Activity.register :kb_articles
   Redmine::Search.available_search_types << 'kb_articles'
 end
+
+ActiveRecord::Base.send :include, RedmineKnowledgebase::Acts::Rated
+ActiveRecord::Base.send :include, RedmineKnowledgebase::Acts::Versioned
+ActiveRecord::Base.send :include, RedmineKnowledgebase::Acts::Viewed
 
 Redmine::Plugin.register :redmine_knowledgebase do
   name        'Knowledgebase'
@@ -21,7 +19,7 @@ Redmine::Plugin.register :redmine_knowledgebase do
   url         'https://github.com/alexbevi/redmine_knowledgebase'
   version     '4.1.1'
 
-  requires_redmine :version_or_higher => '4.0.0'
+  requires_redmine :version_or_higher => '5.0.0'
 
   # Do not set any default boolean settings to true or will override user false setting!
   settings :default => {
@@ -92,7 +90,6 @@ Redmine::Plugin.register :redmine_knowledgebase do
   end
 
   menu :project_menu, :articles, { :controller => 'articles', :action => 'index' }, :caption => :knowledgebase_title, :after => :activity, :param => :project_id
-
 end
 
 class RedmineKnowledgebaseHookListener < Redmine::Hook::ViewListener
